@@ -1,5 +1,5 @@
 {
-  "name": "yas",
+  "name": "@frauschert/yas",
   "version": "0.1.0",
   "description": "Yet Another State - A lightweight and type-safe state management solution for React",
   "main": "./dist/yas.umd.js",

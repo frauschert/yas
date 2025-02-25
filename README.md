@@ -1,43 +1,43 @@
-# YAS (Yet Another Store)
+# YAS (Yet Another State)
 
-A lightweight and type-safe state management solution for React applications.
+A lightweight and type-safe state management solution for vanilla and React applications.
 
 ## Features
 
 - 🎯 Type-safe state management
 - 🔄 Undo/Redo functionality
-- 🎮 Proxy-based state updates
-- 🔍 Deep property watching
 - ⚡️ Lightweight and fast
 - 🧩 Middleware support
+- 🎣 React hooks integration
+- 📦 Zero dependencies
 
 ## Installation
 
 ```bash
-npm install @fabian/yas
+npm install @frauschert/yas
 ```
 
 ## Basic Usage
 
 ```typescript
-import { create } from '@fabian/yas';
+import { create } from '@frauschert/yas';
 
 const store = create({
   initialState: { count: 0 },
   actions: {
     increment: (state) => ({ ...state, count: state.count + 1 }),
     decrement: (state) => ({ ...state, count: state.count - 1 }),
-    incrementBy: (state, amount: number) => ({ 
-      ...state, 
-      count: state.count + amount 
+    incrementBy: (state, amount: number) => ({
+      ...state,
+      count: state.count + amount,
     }),
   },
 });
 
 // Use in components
 function Counter() {
-  const count = store.useStore(state => state.count);
-  
+  const count = store.useStore((state) => state.count);
+
   return (
     <div>
       <p>Count: {count}</p>
@@ -51,39 +51,72 @@ function Counter() {
 
 ## Advanced Usage
 
-### Proxy Store
+### Using Middleware
 
 ```typescript
-import { createProxyStore } from '@fabian/yas';
+const loggerMiddleware = (store) => (next) => (state) => {
+  console.log('Previous:', store.getPreviousState());
+  console.log('Next:', state);
+  next(state);
+};
 
-const store = createProxyStore({
-  user: {
-    name: 'John',
-    settings: {
-      theme: 'dark'
-    }
-  }
-});
-
-// Watch deep properties
-store.$watchPath('user.settings.theme', (newTheme, oldTheme) => {
-  console.log(`Theme changed from ${oldTheme} to ${newTheme}`);
+const store = create({
+  initialState: { count: 0 },
+  actions: {
+    increment: (state) => ({ ...state, count: state.count + 1 }),
+  },
+  middleware: [loggerMiddleware],
 });
 ```
 
 ### Undo/Redo
 
 ```typescript
-import { makeUndoable } from '@fabian/yas';
+import { makeUndoable, createStore } from '@frauschert/yas';
 
 const store = makeUndoable(createStore({ count: 0 }));
 
-store.setState(state => ({ count: state.count + 1 }));
-store.setState(state => ({ count: state.count + 1 }));
+store.setState((state) => ({ count: state.count + 1 }));
+store.setState((state) => ({ count: state.count + 1 }));
 
 store.undo(); // Goes back one step
 store.redo(); // Goes forward one step
+store.clearHistory(); // Clears undo/redo history
 ```
+
+### Custom Equality Function
+
+```typescript
+const store = create({
+  initialState: { user: { name: 'John' } },
+  actions: {
+    updateUser: (state, name: string) => ({
+      ...state,
+      user: { ...state.user, name },
+    }),
+  },
+  equalityFn: (state, previousState) =>
+    state.user.name === previousState.user.name,
+});
+```
+
+## API Reference
+
+### create(options)
+
+Creates a new store with React integration.
+
+- `options.initialState`: The initial state object
+- `options.actions`: Object containing state update functions
+- `options.equalityFn?`: Custom equality function for state comparison
+- `options.middleware?`: Array of middleware functions
+
+### makeUndoable(store, maxHistorySize?)
+
+Adds undo/redo capabilities to a store.
+
+- `store`: The store to enhance
+- `maxHistorySize`: Maximum number of history entries (default: 50)
 
 ## License
 
