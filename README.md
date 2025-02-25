@@ -1,19 +1,6 @@
-# Yas
+# Yas - Yet another state!
 
 This project implements a simple state management store in TypeScript. It provides a way to manage application state with listeners and middleware support.
-
-## Project Structure
-
-```
-my-typescript-project
-├── src
-│   ├── store.ts          # Contains the createStore function and state management logic
-│   └── utils
-│       └── utils.ts      # Utility functions, including deepEqual for state comparison
-├── package.json           # npm configuration file with dependencies and scripts
-├── tsconfig.json          # TypeScript configuration file
-└── README.md              # Project documentation
-```
 
 ## Installation
 
@@ -30,7 +17,7 @@ npm install
 You can create a store by importing the `createStore` function from `src/store.ts` and providing an initial state:
 
 ```typescript
-import { createStore } from "./src/store";
+import { createStore } from './src/store';
 
 const initialState = { count: 0 };
 const store = createStore(initialState);
