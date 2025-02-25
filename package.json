@@ -1,0 +1,43 @@
+{
+  "name": "yas",
+  "version": "1.0.0",
+  "description": "A TypeScript project for state management with a custom store implementation.",
+  "main": "dist/my-library.umd.js",
+  "module": "dist/my-library.es.js",
+  "types": "dist/index.d.ts",
+  "files": [
+    "dist"
+  ],
+  "scripts": {
+    "build": "vite build",
+    "test": "vitest",
+    "format": "prettier --write ."
+  },
+  "keywords": [
+    "typescript",
+    "state management",
+    "store"
+  ],
+  "author": "Fabian Rauschert",
+  "license": "MIT",
+  "devDependencies": {
+    "@eslint/js": "^9.19.0",
+    "@types/react": "^19.0.8",
+    "@types/react-dom": "^19.0.3",
+    "@vitejs/plugin-react": "^4.3.4",
+    "@vitest/browser": "^3.0.4",
+    "eslint": "^9.19.0",
+    "eslint-plugin-react-hooks": "^5.0.0",
+    "eslint-plugin-react-refresh": "^0.4.18",
+    "globals": "^15.14.0",
+    "prettier": "^2.8.0",
+    "typescript": "~5.7.2",
+    "typescript-eslint": "^8.21.0",
+    "vite": "^6.0.11",
+    "vitest": "^3.0.4"
+  },
+  "peerDependencies": {
+    "react": "^17.0.0",
+    "react-dom": "^17.0.0"
+  }
+}
