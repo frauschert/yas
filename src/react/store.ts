@@ -52,8 +52,13 @@ interface CreateStoreParams<
 export function create<
   S extends Record<string, unknown>,
   A extends Record<string, (state: S, ...args: any[]) => S>,
->({ initialState, actions, equalityFn, middleware }: CreateStoreParams<S, A>) {
-  const store = createStore(initialState, equalityFn, middleware);
+>({
+  initialState,
+  actions,
+  equalityFn,
+  middleware = [],
+}: CreateStoreParams<S, A>) {
+  const store = createStore(initialState, equalityFn, ...middleware);
   const useStore = createUseStore(store);
   const boundActions = createActions(store)(actions);
   return { useStore, actions: boundActions, api: store };
