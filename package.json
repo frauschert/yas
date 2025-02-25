@@ -1,22 +1,38 @@
 {
   "name": "yas",
-  "version": "1.0.0",
-  "description": "A TypeScript project for state management with a custom store implementation.",
-  "main": "dist/my-library.umd.js",
-  "module": "dist/my-library.es.js",
-  "types": "dist/index.d.ts",
+  "version": "0.1.0",
+  "description": "Yet Another State - A lightweight and type-safe state management solution for React",
+  "main": "./dist/yas.umd.js",
+  "module": "./dist/yas.es.js",
+  "types": "./dist/index.d.ts",
+  "exports": {
+    ".": {
+      "import": "./dist/yas.es.js",
+      "require": "./dist/yas.umd.js",
+      "types": "./dist/index.d.ts"
+    }
+  },
   "files": [
     "dist"
   ],
   "scripts": {
-    "build": "vite build",
+    "build": "vite build && tsc --emitDeclarationOnly",
     "test": "vitest",
-    "format": "prettier --write ."
+    "format": "prettier --write .",
+    "prepublishOnly": "npm run build",
+    "prepare": "npm run build"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/yourusername/yas.git"
   },
   "keywords": [
+    "react",
+    "state-management",
     "typescript",
-    "state management",
-    "store"
+    "store",
+    "proxy-state",
+    "undo-redo"
   ],
   "author": "Fabian Rauschert",
   "license": "MIT",
@@ -39,5 +55,8 @@
   "peerDependencies": {
     "react": "^17.0.0",
     "react-dom": "^17.0.0"
+  },
+  "publishConfig": {
+    "access": "public"
   }
 }

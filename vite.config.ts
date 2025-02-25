@@ -8,7 +8,7 @@ export default defineConfig({
   build: {
     lib: {
       entry: path.resolve(__dirname, 'src/index.ts'),
-      name: 'Yas',
+      name: 'yas',
       fileName: (format) => `yas.${format}.js`,
     },
     rollupOptions: {
@@ -19,7 +19,13 @@ export default defineConfig({
           'react-dom': 'ReactDOM',
         },
       },
+      exclude: [
+        '**/*.test.ts',
+        '**/*.test.tsx',
+        '**/__tests__/*',
+        '**/tests/*',
+        'src/**/*.spec.ts'
+      ]
     },
-    outDir: 'dist',
   },
 });

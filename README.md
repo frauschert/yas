@@ -1,32 +1,90 @@
-# Yas - Yet another state!
+# YAS (Yet Another Store)
 
-This project implements a simple state management store in TypeScript. It provides a way to manage application state with listeners and middleware support.
+A lightweight and type-safe state management solution for React applications.
+
+## Features
+
+- 🎯 Type-safe state management
+- 🔄 Undo/Redo functionality
+- 🎮 Proxy-based state updates
+- 🔍 Deep property watching
+- ⚡️ Lightweight and fast
+- 🧩 Middleware support
 
 ## Installation
 
-To get started with this project, clone the repository and install the dependencies:
-
 ```bash
-git clone <repository-url>
-cd my-typescript-project
-npm install
+npm install @fabian/yas
 ```
 
-## Usage
-
-You can create a store by importing the `createStore` function from `src/store.ts` and providing an initial state:
+## Basic Usage
 
 ```typescript
-import { createStore } from './src/store';
+import { create } from '@fabian/yas';
 
-const initialState = { count: 0 };
-const store = createStore(initialState);
+const store = create({
+  initialState: { count: 0 },
+  actions: {
+    increment: (state) => ({ ...state, count: state.count + 1 }),
+    decrement: (state) => ({ ...state, count: state.count - 1 }),
+    incrementBy: (state, amount: number) => ({ 
+      ...state, 
+      count: state.count + amount 
+    }),
+  },
+});
+
+// Use in components
+function Counter() {
+  const count = store.useStore(state => state.count);
+  
+  return (
+    <div>
+      <p>Count: {count}</p>
+      <button onClick={store.actions.increment}>Increment</button>
+      <button onClick={store.actions.decrement}>Decrement</button>
+      <button onClick={() => store.actions.incrementBy(5)}>Add 5</button>
+    </div>
+  );
+}
 ```
 
-## Contributing
+## Advanced Usage
 
-Contributions are welcome! Please open an issue or submit a pull request for any improvements or bug fixes.
+### Proxy Store
+
+```typescript
+import { createProxyStore } from '@fabian/yas';
+
+const store = createProxyStore({
+  user: {
+    name: 'John',
+    settings: {
+      theme: 'dark'
+    }
+  }
+});
+
+// Watch deep properties
+store.$watchPath('user.settings.theme', (newTheme, oldTheme) => {
+  console.log(`Theme changed from ${oldTheme} to ${newTheme}`);
+});
+```
+
+### Undo/Redo
+
+```typescript
+import { makeUndoable } from '@fabian/yas';
+
+const store = makeUndoable(createStore({ count: 0 }));
+
+store.setState(state => ({ count: state.count + 1 }));
+store.setState(state => ({ count: state.count + 1 }));
+
+store.undo(); // Goes back one step
+store.redo(); // Goes forward one step
+```
 
 ## License
 
-This project is licensed under the MIT License.
+MIT

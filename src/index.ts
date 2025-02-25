@@ -1,2 +1,3 @@
-export * from "./react/store";
-export * from "./core/store";
+export { create } from './react/store';
+export { createStore, type Store, type Middleware } from './core/store';
+export { makeUndoable } from './core/undoable';
