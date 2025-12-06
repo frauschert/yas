@@ -4,8 +4,8 @@ export function storageMiddleware<T>(
   key: string,
   storage: Storage,
 ): Middleware<T> {
-  return (store) => (next) => (state) => {
+  return () => (next) => (state) => {
     next(state);
-    storage.setItem(key, JSON.stringify(store.getState()));
+    storage.setItem(key, JSON.stringify(state));
   };
 }

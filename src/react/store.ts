@@ -1,5 +1,5 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
-import { useCallback, useSyncExternalStore } from 'react';
+import { useCallback, useRef, useSyncExternalStore } from 'react';
 import { Store, createStore } from '../core/store';
 
 type Middleware<S> = (
@@ -16,11 +16,21 @@ type StoreActions<
 };
 
 function createUseStore<T>(store: Store<T>) {
-  return <K>(selector: (state: T) => K) =>
-    useSyncExternalStore(
-      store.subscribe,
-      useCallback(() => selector(store.getState()), [store, selector]),
-    );
+  return <K>(selector: (state: T) => K, equalityFn = Object.is) => {
+    const selectorRef = useRef(selector);
+    const selectedStateRef = useRef<K>(null);
+
+    const getSnapshot = useCallback(() => {
+      const selectedState = selectorRef.current(store.getState());
+      if (!equalityFn(selectedStateRef.current as K, selectedState)) {
+        selectedStateRef.current = selectedState;
+      }
+      return selectedStateRef.current as K;
+    }, [store, equalityFn]);
+
+    selectorRef.current = selector;
+    return useSyncExternalStore(store.subscribe, getSnapshot);
+  };
 }
 function createActions<T>(store: Store<T>) {
   return <A extends Record<string, (state: T, ...args: any[]) => T>>(

@@ -3,7 +3,7 @@ import { create } from "./store";
 
 describe("store", () => {
   it("should increment the count", () => {
-    const { useStore, actions } = create({
+    const { api, actions } = create({
       initialState: { count: 0 },
       actions: {
         increment: (state) => ({ ...state, count: state.count + 1 }),
@@ -11,12 +11,12 @@ describe("store", () => {
     });
 
     actions.increment();
-    const state = useStore((state) => state);
+    const state = api.getState();
     expect(state.count).toBe(1);
   });
 
   it("should decrement the count", () => {
-    const { useStore, actions } = create({
+    const { api, actions } = create({
       initialState: { count: 1 },
       actions: {
         decrement: (state) => ({ ...state, count: state.count - 1 }),
@@ -24,12 +24,12 @@ describe("store", () => {
     });
 
     actions.decrement();
-    const count = useStore((state) => state.count);
+    const count = api.getState().count;
     expect(count).toBe(0);
   });
 
   it("should increment the count by a specific value", () => {
-    const { useStore, actions } = create({
+    const { api, actions } = create({
       initialState: { count: 0 },
       actions: {
         incrementBy: (state, by: number) => ({
@@ -40,7 +40,7 @@ describe("store", () => {
     });
 
     actions.incrementBy(5);
-    const count = useStore((state) => state.count);
+    const count = api.getState().count;
     expect(count).toBe(5);
   });
 });

@@ -24,12 +24,14 @@ describe('createStore', () => {
 
 describe('createStore with middleware', () => {
   it('should apply middleware', () => {
-    const middleware = vi.fn((store) => (next: any) => (state: any) => {
+    const middlewareFn = vi.fn();
+    const middleware = (store: any) => (next: any) => (state: any) => {
+      middlewareFn();
       next({ ...state, count: state.count + 1 });
-    });
-    const store = createStore({ count: 0 }, undefined, [middleware]);
+    };
+    const store = createStore({ count: 0 }, undefined, middleware);
     store.setState((state) => ({ ...state, count: state.count + 1 }));
     expect(store.getState().count).toBe(2);
-    expect(middleware).toHaveBeenCalled();
+    expect(middlewareFn).toHaveBeenCalled();
   });
 });
