@@ -19,12 +19,13 @@ describe('devToolsMiddleware', () => {
       connect: vi.fn(() => devTools),
     };
 
-    const store = createStore(initialState, undefined, devToolsMiddleware(name));
+    const store = createStore(
+      initialState,
+      undefined,
+      devToolsMiddleware(name),
+    );
 
     store.setState((state) => ({ ...state, count: state.count + 1 }));
-    expect(devTools.send).toHaveBeenCalledWith(
-      name,
-      { count: 1 },
-    );
+    expect(devTools.send).toHaveBeenCalledWith(name, { count: 1 });
   });
 });

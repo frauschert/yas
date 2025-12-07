@@ -1,8 +1,8 @@
-import { describe, it, expect } from "vitest";
-import { create } from "./store";
+import { describe, it, expect } from 'vitest';
+import { create } from './store';
 
-describe("store", () => {
-  it("should increment the count", () => {
+describe('store', () => {
+  it('should increment the count', () => {
     const { api, actions } = create({
       initialState: { count: 0 },
       actions: {
@@ -15,7 +15,7 @@ describe("store", () => {
     expect(state.count).toBe(1);
   });
 
-  it("should decrement the count", () => {
+  it('should decrement the count', () => {
     const { api, actions } = create({
       initialState: { count: 1 },
       actions: {
@@ -28,7 +28,7 @@ describe("store", () => {
     expect(count).toBe(0);
   });
 
-  it("should increment the count by a specific value", () => {
+  it('should increment the count by a specific value', () => {
     const { api, actions } = create({
       initialState: { count: 0 },
       actions: {
