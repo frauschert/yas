@@ -15,21 +15,59 @@ type StoreActions<
     : () => void;
 };
 
-function createUseStore<T>(store: Store<T>) {
-  return <K>(selector: (state: T) => K, equalityFn = Object.is) => {
+export function createUseStore<T>(store: Store<T>) {
+  return <K>(
+    selector: (state: T) => K,
+    equalityFn: (a: K, b: K) => boolean = Object.is,
+  ) => {
     const selectorRef = useRef(selector);
-    const selectedStateRef = useRef<K>(selector(store.getState()));
+    const equalityRef = useRef(equalityFn);
+    const stateRef = useRef(store.getState());
+    const selectedStateRef = useRef<K>(selector(stateRef.current));
+
+    // Check if selector or equality function changed
+    const selectorChanged = selectorRef.current !== selector;
+    const equalityChanged = equalityRef.current !== equalityFn;
+
+    // Update refs on each render to capture latest selector and equality function
+    selectorRef.current = selector;
+    equalityRef.current = equalityFn;
+
+    const subscribe = useCallback(
+      (callback: () => void) => {
+        return store.subscribe(() => {
+          callback();
+        });
+      },
+      [store],
+    );
 
     const getSnapshot = useCallback(() => {
-      const selectedState = selectorRef.current(store.getState());
-      if (!equalityFn(selectedStateRef.current as K, selectedState)) {
+      const state = store.getState();
+
+      // Recompute if store state changed
+      if (state !== stateRef.current) {
+        const selectedState = selectorRef.current(state);
+        if (!equalityRef.current(selectedStateRef.current, selectedState)) {
+          selectedStateRef.current = selectedState;
+        }
+        stateRef.current = state;
+      }
+
+      return selectedStateRef.current;
+    }, [store]);
+
+    // Force recomputation if selector/equality changed by calling getSnapshot
+    if (selectorChanged || equalityChanged) {
+      const state = store.getState();
+      const selectedState = selectorRef.current(state);
+      if (!equalityRef.current(selectedStateRef.current, selectedState)) {
         selectedStateRef.current = selectedState;
       }
-      return selectedStateRef.current as K;
-    }, [store, equalityFn]);
+      stateRef.current = state;
+    }
 
-    selectorRef.current = selector;
-    return useSyncExternalStore(store.subscribe, getSnapshot);
+    return useSyncExternalStore(subscribe, getSnapshot);
   };
 }
 function createActions<T>(store: Store<T>) {

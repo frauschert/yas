@@ -24,8 +24,11 @@ export default defineConfig({
         '**/*.test.tsx',
         '**/__tests__/*',
         '**/tests/*',
-        'src/**/*.spec.ts'
-      ]
+        'src/**/*.spec.ts',
+      ],
     },
+  },
+  test: {
+    environment: 'jsdom',
   },
 });
