@@ -18,7 +18,7 @@ type StoreActions<
 function createUseStore<T>(store: Store<T>) {
   return <K>(selector: (state: T) => K, equalityFn = Object.is) => {
     const selectorRef = useRef(selector);
-    const selectedStateRef = useRef<K>(null);
+    const selectedStateRef = useRef<K>(selector(store.getState()));
 
     const getSnapshot = useCallback(() => {
       const selectedState = selectorRef.current(store.getState());
