@@ -66,12 +66,13 @@ export function createStore<T extends Record<string, unknown>>(
   };
 
   if (middleware.length > 0) {
+    const originalSetState = setState;
     const middlewareAction = middleware
       .slice()
       .reverse()
       .reduce(
         (prev, mw) => mw(store)(prev),
-        (updatedState: T) => setState(() => updatedState),
+        (updatedState: T) => originalSetState(() => updatedState),
       );
 
     setState = (fn: (state: T) => T) => {
